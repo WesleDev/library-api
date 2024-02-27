@@ -1,4 +1,4 @@
-package com.wesledev.libraryapi.model.entity;
+package com.wesledev.libraryapi.api.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;

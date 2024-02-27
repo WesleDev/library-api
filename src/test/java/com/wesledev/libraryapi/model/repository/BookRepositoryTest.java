@@ -1,7 +1,6 @@
 package com.wesledev.libraryapi.model.repository;
 
 import com.wesledev.libraryapi.model.entity.Book;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +9,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,7 +31,7 @@ public class BookRepositoryTest {
         //cenario
 
         String isbn = "123";
-        Book book = Book.builder().title("Teste").author("Teste").isbn(isbn).build();
+        Book book = createNewBook(isbn);
         entityManager.persist(book);
 
         //execucao
@@ -54,5 +55,50 @@ public class BookRepositoryTest {
         //verificacao
         assertThat(exists).isFalse();
 
+    }
+
+    @Test
+    @DisplayName("Deve obter um livro por id.")
+    void findByIdTest() {
+
+        //cenario
+        Book book = createNewBook("123");
+        entityManager.persist(book);
+
+        //execucao
+        Optional<Book> foundBook = repository.findById(book.getId());
+
+        //verificacao
+        assertThat(foundBook.isPresent()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Deve salvar um livro.")
+    void saveBookTest() {
+
+        Book book = createNewBook("123");
+
+        Book savedBook = repository.save(book);
+
+        assertThat(savedBook.getId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("Deve deletar um livro")
+    void deleteBookTest() {
+        //cenario
+        Book book = createNewBook("123");
+        entityManager.persist(book);
+
+        Book foundBook = entityManager.find(Book.class, book.getId());
+
+        repository.delete(foundBook);
+
+        Book deletedBook = entityManager.find(Book.class, book.getId());
+        assertThat(deletedBook).isNull();
+    }
+
+    private static Book createNewBook(String isbn) {
+        return Book.builder().title("Teste").author("Teste").isbn(isbn).build();
     }
 }
