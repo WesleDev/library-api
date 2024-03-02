@@ -5,12 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class LoanDto {
+@NoArgsConstructor
+@Data
+public class ReturnedLoanDTO {
 
-    private String isbn;
-    private String customer;
+    private Boolean returned;
 }
